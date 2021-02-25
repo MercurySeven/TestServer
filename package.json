@@ -1,0 +1,21 @@
+{
+  "name": "mercuryseven-server",
+  "version": "1.0.0",
+  "description": "Finto server per testare l'app",
+  "main": "main.js",
+  "scripts": {
+    "install": "nodemon main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mercury Seven",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server": "^2.19.1",
+    "graphql": "^15.4.0",
+    "graphql-upload": "^11.0.0",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
