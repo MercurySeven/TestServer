@@ -32,7 +32,7 @@ const typeDefs = gql`
 
   type FileDB {
       Nome: String!
-      DataCreazione: String!
+      DataUltimaModifica: String!
   }
   
   type Query {
@@ -67,9 +67,9 @@ const resolvers = {
                 try {
                     if (fs.existsSync("./uploadedFiles/" + filename)) {
                         //file esiste fai un update
-                        query("UPDATE `files` SET `DataCreazione` = '" + data + "' WHERE `Nome` = '" + nomefile + "';")
+                        query("UPDATE `files` SET `DataUltimaModifica` = '" + data + "' WHERE `Nome` = '" + nomefile + "';")
                     } else {
-                        query("INSERT INTO `files` (`Nome`, `DataCreazione`) VALUES ('" + nomefile + "', '" + data + "');")
+                        query("INSERT INTO `files` (`Nome`, `DataUltimaModifica`) VALUES ('" + nomefile + "', '" + data + "');")
                     }
 
                 } catch (err) {
