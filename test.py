@@ -16,7 +16,7 @@ query = gql('''
   }
 ''')
 
-with open("vai copy 2.txt", "rb") as f:
+with open("vai.txt", "rb") as f:
 
     x = datetime.datetime.now()
 
