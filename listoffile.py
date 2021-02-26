@@ -2,7 +2,7 @@ from gql import gql, Client
 from gql.transport.aiohttp import AIOHTTPTransport
 import json
 
-transport = AIOHTTPTransport(url='http://127.0.0.1:8080/')
+transport = AIOHTTPTransport(url='http://127.0.0.1:80/')
 
 client = Client(transport=transport)
 

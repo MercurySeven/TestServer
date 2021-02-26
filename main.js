@@ -20,6 +20,13 @@ function query(sql) {
         });
     })
 }
+function deleteQuery(sql) {
+    console.log(sql)
+    connection.query(sql, function (err, result) {
+        if (err) throw err;
+        console.log("Number of records deleted: " + result.affectedRows);
+    });
+}
 
 
 
@@ -41,6 +48,7 @@ const typeDefs = gql`
   
   type Mutation {
     singleUpload(file: Upload!, datetime: String!): File!
+    removeFile(fileName: String!): FileDB
   }
 `;
 
@@ -49,6 +57,35 @@ const resolvers = {
         GetAllFiles: () => query("SELECT * FROM files")
     },
     Mutation: {
+        removeFile: (parent, args) => {
+            if (!fs.existsSync("./uploadedFiles")) {
+                fs.mkdirSync("./uploadedFiles");
+            }
+
+            const path = "./uploadedFiles/" + args.fileName
+
+            try {
+                if (fs.existsSync(path)) {
+                    fs.unlinkSync(path);
+                    deleteQuery("DELETE FROM files WHERE `Nome` = '" + args.fileName + "';");
+                    return {
+                        "Nome": args.fileName,
+                        "DataUltimaModifica": "Dovevi informati prima!"
+                    }
+                }
+                return {
+                    "Nome": "File inesistente",
+                    "DataUltimaModifica": "Data inesistente"
+                }
+            } catch (err) {
+                console.error(err)
+                return {
+                    "Nome": "Fail",
+                    "DataUltimaModifica": "9999-99-99"
+                }
+            }
+
+        },
         singleUpload: (parent, args) => {
             return args.file.then(file => {
                 const { createReadStream, filename, mimetype } = file
