@@ -7,7 +7,7 @@ services:
     ports:
       - "80:5000"
     volumes:
-     - ./:/usr/src/app
+     - ./:/usr/app
 
   mysql-server:
     image: mysql:8.0.22
