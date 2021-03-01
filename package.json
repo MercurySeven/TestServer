@@ -4,7 +4,6 @@
   "description": "Finto server per testare l'app",
   "main": "main.js",
   "scripts": {
-    "install": "nodemon main.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Mercury Seven",

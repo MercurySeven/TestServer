@@ -28,8 +28,6 @@ function deleteQuery(sql) {
     });
 }
 
-
-
 const typeDefs = gql`  
   type File {
     filename: String!
@@ -41,9 +39,15 @@ const typeDefs = gql`
       Nome: String!
       DataUltimaModifica: String!
   }
+
+  type FileBase64 {
+    Nome: String!
+    Base64: String!
+}
   
   type Query {
     GetAllFiles: [FileDB]
+    DownloadFile(fileName: String!): FileBase64
   }
   
   type Mutation {
@@ -54,7 +58,37 @@ const typeDefs = gql`
 
 const resolvers = {
     Query: {
-        GetAllFiles: () => query("SELECT * FROM files")
+        GetAllFiles: () => query("SELECT * FROM files"),
+        DownloadFile: async (_, { fileName }) => {
+            console.log("Richiesta di download: " + fileName)
+            if (!fs.existsSync("./uploadedFiles")) {
+                fs.mkdirSync("./uploadedFiles");
+            }
+
+            const path = "./uploadedFiles/" + fileName
+
+            try {
+                if (fs.existsSync(path)) {
+
+                    base64String = fs.readFileSync(path, { encoding: 'base64' });
+
+                    return {
+                        "Nome": fileName,
+                        "Base64": base64String
+                    }
+                }
+                return {
+                    "Nome": fileName,
+                    "Base64": "0"
+                }
+            } catch (err) {
+                console.error(err)
+                return {
+                    "Nome": fileName,
+                    "Base64": "0"
+                }
+            }
+        }
     },
     Mutation: {
         removeFile: (parent, args) => {
