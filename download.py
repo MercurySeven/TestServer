@@ -16,6 +16,7 @@ query {
 ''')
 
 result = client.execute(query)["DownloadFile"]["Base64"]
+result = client.execute(query)["DownloadFile"]["DataUltimaModifica"]
 print(result)
 
 base64_bytes = result.encode('ascii')

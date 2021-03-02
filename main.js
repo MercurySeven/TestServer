@@ -43,6 +43,7 @@ const typeDefs = gql`
   type FileBase64 {
     Nome: String!
     Base64: String!
+    DataUltimaModifica: String!
 }
   
   type Query {
@@ -72,20 +73,27 @@ const resolvers = {
 
                     base64String = fs.readFileSync(path, { encoding: 'base64' });
 
+                    let r = await query("SELECT * FROM files WHERE `Nome` = '" + fileName + "';")
+
+                    console.log("Data ultima modifica: " + r[0]["DataUltimaModifica"])
+
                     return {
                         "Nome": fileName,
-                        "Base64": base64String
+                        "Base64": base64String,
+                        "DataUltimaModifica": r[0]["DataUltimaModifica"]
                     }
                 }
                 return {
                     "Nome": fileName,
-                    "Base64": "0"
+                    "Base64": "-1",
+                    "DataUltimaModifica": "-1"
                 }
             } catch (err) {
                 console.error(err)
                 return {
                     "Nome": fileName,
-                    "Base64": "0"
+                    "Base64": "-1",
+                    "DataUltimaModifica": "-1"
                 }
             }
         }
