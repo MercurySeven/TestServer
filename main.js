@@ -163,7 +163,15 @@ const resolvers = {
 };
 
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    uploads: {
+        maxFileSize: 200000000,
+        maxFiles: 30,
+        maxFieldSize: 200000000
+    },
+});
 
 server.listen({ port: 5000 }).then(({ url }) => {
     console.log(`🚀  Server ready at ${url}`);

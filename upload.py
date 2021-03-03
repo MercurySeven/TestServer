@@ -16,7 +16,7 @@ query = gql('''
   }
 ''')
 
-with open("vai.txt", "rb") as f:
+with open("Starship_SN8.mp4", "rb") as f:
 
     x = datetime.datetime.now()
 

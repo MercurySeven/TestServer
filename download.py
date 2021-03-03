@@ -9,17 +9,18 @@ client = Client(transport=transport)
 
 query = gql('''
 query {
-  DownloadFile(fileName : "vai.txt") {
+  DownloadFile(fileName : "Starship_SN8.mp4") {
     Base64
+    DataUltimaModifica
   }
 }
 ''')
 
 result = client.execute(query)["DownloadFile"]["Base64"]
-result = client.execute(query)["DownloadFile"]["DataUltimaModifica"]
-print(result)
+#result_base = client.execute(query)["DownloadFile"]["DataUltimaModifica"]
+print(len(result))
 
 base64_bytes = result.encode('ascii')
 
-with open("scaricati/vai.txt", "wb") as fh:
+with open("scaricati/video.mp4", "wb") as fh:
     fh.write(base64.decodebytes(base64_bytes))

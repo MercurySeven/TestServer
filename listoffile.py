@@ -16,7 +16,9 @@ query = gql('''
 ''')
 
 result = client.execute(query)["GetAllFiles"]
-d: dict = {}
-for items in result:
-    print(items["Nome"] + " -> " + items["DataUltimaModifica"])
-    d[items["Nome"]] = items["DataUltimaModifica"]
+# d: dict = {}
+# for items in result:
+#     print(items["Nome"] + " -> " + items["DataUltimaModifica"])
+#     d[items["Nome"]] = items["DataUltimaModifica"]
+
+print(len(result))
