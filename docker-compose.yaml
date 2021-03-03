@@ -6,6 +6,8 @@ services:
     restart: always
     ports:
       - "80:5000"
+    volumes:
+      - ./:/usr/app
 
   mysql-server:
     image: mysql:8.0.22

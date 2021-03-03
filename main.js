@@ -29,12 +29,7 @@ function deleteQuery(sql) {
 }
 
 const typeDefs = gql`  
-  type File {
-    filename: String!
-    mimetype: String!
-    encoding: String!
-  }
-
+  
   type FileDB {
       Nome: String!
       DataUltimaModifica: String!
@@ -44,15 +39,15 @@ const typeDefs = gql`
     Nome: String!
     Base64: String!
     DataUltimaModifica: String!
-}
+  }
   
   type Query {
     GetAllFiles: [FileDB]
     DownloadFile(fileName: String!): FileBase64
   }
-  
+
   type Mutation {
-    singleUpload(file: Upload!, datetime: String!): File!
+    singleUpload(fileName: String, base64: String!, datetime: String!): FileDB!
     removeFile(fileName: String!): FileDB
   }
 `;
@@ -129,35 +124,33 @@ const resolvers = {
 
         },
         singleUpload: (parent, args) => {
-            return args.file.then(file => {
-                const { createReadStream, filename, mimetype } = file
 
-                const nomefile = filename
+            if (!fs.existsSync("./uploadedFiles")) {
+                fs.mkdirSync("./uploadedFiles");
+            }
+            const path = "./uploadedFiles/" + args.fileName
+
+            try {
+                if (fs.existsSync(path)) {
+                    //file esiste fai un update
+                    query("UPDATE `files` SET `DataUltimaModifica` = '" + data + "' WHERE `Nome` = '" + nomefile + "';")
+                } else {
+                    query("INSERT INTO `files` (`Nome`, `DataUltimaModifica`) VALUES ('" + nomefile + "', '" + data + "');")
+                }
                 const data = args.datetime //2021-02-25 18:04:22
-                console.log("Ricevuto il file: " + nomefile)
-                console.log("Ultima modifica: " + data)
+                const base64String = args.base64
+                fs.writeFile(path, base64String, { encoding: 'base64' }, function (err) {
+                    console.log('File creato');
+                });
 
-                const fileStream = createReadStream()
-
-                if (!fs.existsSync("./uploadedFiles")) {
-                    fs.mkdirSync("./uploadedFiles");
+                return {
+                    "Nome": args.fileName,
+                    "DataUltimaModifica": args.datetime
                 }
 
-                try {
-                    if (fs.existsSync("./uploadedFiles/" + filename)) {
-                        //file esiste fai un update
-                        query("UPDATE `files` SET `DataUltimaModifica` = '" + data + "' WHERE `Nome` = '" + nomefile + "';")
-                    } else {
-                        query("INSERT INTO `files` (`Nome`, `DataUltimaModifica`) VALUES ('" + nomefile + "', '" + data + "');")
-                    }
-
-                } catch (err) {
-                    console.error(err)
-                }
-
-                fileStream.pipe(fs.createWriteStream(`./uploadedFiles/${filename}`))
-                return file;
-            });
+            } catch (err) {
+                console.error(err)
+            }
         }
     },
 };
@@ -165,14 +158,9 @@ const resolvers = {
 
 const server = new ApolloServer({
     typeDefs,
-    resolvers,
-    uploads: {
-        maxFileSize: 200000000,
-        maxFiles: 30,
-        maxFieldSize: 200000000
-    },
+    resolvers
 });
 
 server.listen({ port: 5000 }).then(({ url }) => {
-    console.log(`🚀  Server ready at ${url}`);
+    console.log(`Server ready at ${url}`);
 });
